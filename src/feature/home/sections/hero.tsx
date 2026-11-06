@@ -7,6 +7,13 @@ const css = `
   --bg: #F9F3EA;
   --brown: #4a2a08;
 
+  /* statue size + how far to pull it UP to remove the empty gap on top.
+     Increase --lift to move the statue higher (stage gets shorter by the same amount) */
+  --stage-h: 1180px;
+  --lift: 250px;
+  /* cuts the empty space under the statue's base. Increase to remove more */
+  --trim: 280px;
+
   position: relative;
   min-height: 100vh;
   overflow: hidden;
@@ -66,19 +73,17 @@ const css = `
   background: #684018;
 }
 
-/* Statue Stage */
+/* Statue Stage (fixed height, the statue fills it) */
 .lh .stage {
   position: relative;
   width: calc(100% + 48px);
-  min-height: 650px;
+  height: calc(var(--stage-h) - var(--lift) - var(--trim));
   margin: 12px -24px 0;
   overflow: hidden;
   background: var(--bg);
-  border: none;
-  outline: none;
 }
 
-/* Background Typography */
+/* Background Typography (optional, add <div className="big">…</div> if wanted) */
 .lh .big {
   position: absolute;
   left: 50%;
@@ -93,37 +98,39 @@ const css = `
   user-select: none;
 }
 
-/* Statue Video */
-.lh .statue {
-  position: relative;
+/* ---------- Statue: rises from the bottom once, then stays still ---------- */
+.lh .rise {
+  position: absolute;
+  inset: 0;
   z-index: 2;
-  display: block;
-  width: 100%;
-  height: auto;
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  border: none;
-  outline: none;
-
-  -webkit-mask-image: linear-gradient(
-    180deg,
-    transparent 0%,
-    #000 15%,
-    #000 90%,
-    transparent 100%
-  );
-
-  mask-image: linear-gradient(
-    180deg,
-    transparent 0%,
-    #000 15%,
-    #000 90%,
-    transparent 100%
-  );
+  opacity: 0;
+  transform: translateY(45%);
+  pointer-events: none;
 }
 
-/* Information Row - TOP of Video */
+.lh .rise.in {
+  animation: lh-statue-rise 1.8s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+.lh .statue {
+  display: block;
+  width: 100%;
+  height: var(--stage-h);
+  margin-top: calc(var(--lift) * -1);
+  object-fit: contain;
+  object-position: 50% 0%;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+@keyframes lh-statue-rise {
+  0%   { opacity: 0; transform: translateY(45%); }
+  35%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Information Row - TOP of stage */
 .lh .info-row {
   position: absolute;
   top: 55px;
@@ -201,7 +208,7 @@ const css = `
   z-index: 4;
 }
 
-/* ---------- Entrance animation (runs once on load) ---------- */
+/* ---------- Text entrance animation (runs once on load) ---------- */
 .lh .line {
   display: block;
   overflow: hidden;
@@ -229,7 +236,7 @@ const css = `
 
 .lh .info-row {
   opacity: 0;
-  animation: lh-appear 1s ease-out .95s forwards;
+  animation: lh-appear 1s ease-out 1.2s forwards;
 }
 
 @keyframes lh-rise {
@@ -257,14 +264,22 @@ const css = `
   .lh .info-row {
     transform: translateX(-50%);
   }
+  .lh .rise,
+  .lh .rise.in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Tablet */
 @media (max-width: 760px) {
   .lh {
-    min-height: 0;            /* no forced full-screen height */
+    --stage-h: 810px;
+    --lift: 170px;
+    --trim: 190px;
+    min-height: 0;
     padding: 32px 18px 0;
-    background: #F9F3EA;
   }
 
   .lh h1 {
@@ -285,27 +300,8 @@ const css = `
 
   .lh .stage {
     width: calc(100% + 36px);
-    min-height: 0;            /* let the video set the height */
+    height: calc(var(--stage-h) - var(--lift) - var(--trim));
     margin: 4px -18px 0;
-    background: #F9F3EA;
-  }
-
-  /* shorter fade so less empty space at the video's top and bottom */
-  .lh .statue {
-    -webkit-mask-image: linear-gradient(
-      180deg,
-      transparent 0%,
-      #000 8%,
-      #000 95%,
-      transparent 100%
-    );
-    mask-image: linear-gradient(
-      180deg,
-      transparent 0%,
-      #000 8%,
-      #000 95%,
-      transparent 100%
-    );
   }
 
   .lh .info-row {
@@ -345,6 +341,9 @@ const css = `
 /* Mobile */
 @media (max-width: 480px) {
   .lh {
+    --stage-h: 650px;
+    --lift: 130px;
+    --trim: 150px;
     padding-top: 28px;
   }
 
@@ -361,7 +360,7 @@ const css = `
   }
 
   .lh .stage {
-    min-height: 0;
+    height: calc(var(--stage-h) - var(--lift) - var(--trim));
     margin-top: 0;
   }
 
@@ -427,23 +426,31 @@ const Badge: React.FC<{ title: string; years: string }> = ({
 );
 
 export interface LawyerHeroProps {
-  /** Desktop statue video, path inside /public */
+  /** Desktop statue video (transparent WebM), path inside /public */
   videoSrc?: string;
-  /** Mobile statue video, path inside /public */
+  /** Mobile statue video (transparent WebM), path inside /public */
   mobileVideoSrc?: string;
+  /**
+   * Optional Safari fallback (HEVC with alpha, .mov / .mp4).
+   * Safari can't play VP9 alpha WebM, so without this it shows a black box.
+   */
+  safariVideoSrc?: string;
+  mobileSafariVideoSrc?: string;
   /** Screens this wide or narrower (px) get the mobile video */
   mobileBreakpoint?: number;
 }
 
 export default function LawyerHero({
-  videoSrc = "/hero/main-hero.mp4",
-  mobileVideoSrc = "/hero/mobile-hero.mp4",
+  videoSrc = "/hero/hero-bg.webm",
+  mobileVideoSrc = "/hero/statue-mobile.webm",
+  safariVideoSrc,
+  mobileSafariVideoSrc,
   mobileBreakpoint = 760,
 }: LawyerHeroProps) {
-  // null until the browser tells us the screen size, so only ONE video is
-  // ever downloaded (desktop or mobile), never both.
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [ready, setReady] = useState(false);
 
+  // Pick one video only (desktop OR mobile)
   useEffect(() => {
     const mq = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`);
     const update = () => setIsMobile(mq.matches);
@@ -452,7 +459,13 @@ export default function LawyerHero({
     return () => mq.removeEventListener("change", update);
   }, [mobileBreakpoint]);
 
-  const activeSrc = isMobile ? mobileVideoSrc : videoSrc;
+  const webmSrc = isMobile ? mobileVideoSrc : videoSrc;
+  const altSrc = isMobile ? mobileSafariVideoSrc : safariVideoSrc;
+
+  // restart the rise animation if the source swaps (desktop <-> mobile)
+  useEffect(() => {
+    setReady(false);
+  }, [webmSrc]);
 
   return (
     <section className="lh">
@@ -482,22 +495,29 @@ export default function LawyerHero({
 
       {/* Statue Stage */}
       <div className="stage">
-        {/* Statue Video */}
         {isMobile !== null && (
-          <video
-            key={activeSrc}
-            className="statue"
-            src={activeSrc}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            aria-label="Lady Justice statue"
-          />
+          <div className={`rise${ready ? " in" : ""}`}>
+            <video
+              key={webmSrc}
+              className="statue"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              aria-label="Lady Justice statue"
+              onLoadedData={() => setReady(true)}
+            >
+              {/* Safari first (it ignores the webm alpha, so it must see this one first) */}
+              {altSrc && (
+                <source src={altSrc} type='video/mp4; codecs="hvc1"' />
+              )}
+              <source src={webmSrc} type="video/webm" />
+            </video>
+          </div>
         )}
 
-        {/* Information Row - Overlapping TOP of Video */}
+        {/* Information Row - overlapping TOP of stage */}
         <div className="info-row">
           <p className="left">
             Our legal team brings <b>30+ years</b> of combined expertise,
