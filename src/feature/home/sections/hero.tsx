@@ -497,7 +497,7 @@ export interface LawyerHeroProps {
 
 export default function LawyerHero({
   videoSrc = "/hero/hero-main.webm",
-  mobileVideoSrc = "/hero/statue-mobile.webm",
+  mobileVideoSrc = "/hero/hero-main.webm",
   safariVideoSrc,
   mobileSafariVideoSrc,
   mobileBreakpoint = 760,
