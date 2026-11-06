@@ -111,6 +111,23 @@ const css = `
   animation: lh-appear 1.2s ease-out .6s forwards;
 }
 
+/* Thin outline box behind the statue (no fill, like the ref) */
+.lh .frame {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: var(--frame-w, 36%);
+  transform: translateX(-50%);
+  z-index: 1;
+  pointer-events: none;
+  background: none;
+  border: 1px solid rgba(74, 42, 8, .12);
+  border-bottom: none;
+  opacity: 0;
+  animation: lh-appear 1.2s ease-out .4s forwards;
+}
+
 /* ---------- Statue: rises from the bottom once, then stays still ---------- */
 .lh .rise {
   position: absolute;
@@ -295,7 +312,8 @@ const css = `
   .lh .info-row {
     transform: translate(-50%, -50%);
   }
-  .lh .big {
+  .lh .big,
+  .lh .frame {
     animation: none;
     opacity: 1;
   }
@@ -310,6 +328,7 @@ const css = `
 /* Tablet */
 @media (max-width: 760px) {
   .lh {
+    --frame-w: 40%;
     --stage-h: 810px;
     --lift: 170px;
     --trim: 190px;
@@ -376,6 +395,7 @@ const css = `
 /* Mobile */
 @media (max-width: 480px) {
   .lh {
+    --frame-w: 44%;
     --stage-h: 650px;
     --lift: 130px;
     --trim: 150px;
@@ -476,7 +496,7 @@ export interface LawyerHeroProps {
 }
 
 export default function LawyerHero({
-  videoSrc = "/hero/hero-bg.webm",
+  videoSrc = "/hero/hero-main.webm",
   mobileVideoSrc = "/hero/statue-mobile.webm",
   safariVideoSrc,
   mobileSafariVideoSrc,
@@ -534,6 +554,9 @@ export default function LawyerHero({
         <div className="big" aria-hidden="true">
           Lawyer
         </div>
+
+        {/* Framed box behind the statue */}
+        <div className="frame" aria-hidden="true" />
 
         {isMobile !== null && (
           <div className={`rise${ready ? " in" : ""}`}>
