@@ -31,7 +31,7 @@ const defaultPosts: BlogPost[] = [
     date: "28 Oct 2026",
     readTime: "6 min read",
     href: "/insights/articles/first-24-hours-commercial-dispute",
-    image: "/images/lawyer.png",
+    image: "/blogs/commercial-dispute.png",
   },
   {
     title: "Arbitration or litigation: choosing the right forum",
@@ -41,7 +41,7 @@ const defaultPosts: BlogPost[] = [
     date: "14 Oct 2026",
     readTime: "5 min read",
     href: "/insights/articles/arbitration-or-litigation",
-    image: "/images/lawyer.png",
+    image: "/blogs/arbitration-litigation.png",
   },
   {
     title: "Understanding your rights during a financial crime investigation",
@@ -51,7 +51,7 @@ const defaultPosts: BlogPost[] = [
     date: "02 Oct 2026",
     readTime: "4 min read",
     href: "/insights/articles/rights-financial-crime-investigation",
-    image: "/images/lawyer.png",
+    image: "/blogs/financial-crime.png",
   },
 ];
 

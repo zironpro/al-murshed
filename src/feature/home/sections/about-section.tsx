@@ -18,19 +18,19 @@ export interface AboutPageProps {
 
 const defaultFeatureCards: ImageCard[] = [
   {
-    src: "/images/lawyer.png",
+    src: "/images/litigation.png",
     alt: "Lawyer reviewing legal documents",
     title: "Litigation",
     text: "Representing clients in court and before tribunals.",
   },
   {
-    src: "/images/lawyer.png",
+    src: "/images/corporate.png",
     alt: "Corporate legal professional",
     title: "Corporate",
     text: "Advice on company law, contracts and transactions.",
   },
   {
-    src: "/images/lawyer.png",
+    src: "/images/family-law.png",
     alt: "Legal consultant",
     title: "Family Law",
     text: "Guidance on family matters, handled with care.",
