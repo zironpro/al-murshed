@@ -83,19 +83,32 @@ const css = `
   background: var(--bg);
 }
 
-/* Background Typography (optional, add <div className="big">…</div> if wanted) */
+/* Big "LAWYER" word behind the statue (fades out toward the bottom) */
 .lh .big {
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 3%;
   transform: translateX(-50%);
+  z-index: 1;
   font-weight: 600;
-  font-size: clamp(120px, 22vw, 250px);
-  letter-spacing: .02em;
-  color: rgba(74, 42, 8, .10);
+  font-size: clamp(90px, 20vw, 380px);
+  letter-spacing: .14em;
+  line-height: 1;
   white-space: nowrap;
-  line-height: .8;
+  text-transform: uppercase;
   user-select: none;
+  pointer-events: none;
+  color: transparent;
+  background: linear-gradient(
+    180deg,
+    rgba(74, 42, 8, .13) 0%,
+    rgba(74, 42, 8, .06) 55%,
+    rgba(74, 42, 8, 0) 90%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+  animation: lh-appear 1.2s ease-out .6s forwards;
 }
 
 /* ---------- Statue: rises from the bottom once, then stays still ---------- */
@@ -133,9 +146,9 @@ const css = `
 /* Information Row - TOP of stage */
 .lh .info-row {
   position: absolute;
-  top: 55px;
+  top: 52%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   z-index: 5;
 
   display: flex;
@@ -193,6 +206,24 @@ const css = `
   display: block;
   width: 85px;
   font-weight: 500;
+}
+
+/* Bottom gradient: fades the statue base + word into the page background */
+.lh .stage::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 28%;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(249, 243, 234, 0) 0%,
+    rgba(249, 243, 234, .75) 60%,
+    #F9F3EA 100%
+  );
 }
 
 /* Bottom Decorative Bar */
@@ -262,7 +293,11 @@ const css = `
     transform: none;
   }
   .lh .info-row {
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
+  }
+  .lh .big {
+    animation: none;
+    opacity: 1;
   }
   .lh .rise,
   .lh .rise.in {
@@ -305,7 +340,7 @@ const css = `
   }
 
   .lh .info-row {
-    top: 12px;
+    top: 52%;
     padding: 0 20px;
     gap: 20px;
   }
@@ -334,7 +369,7 @@ const css = `
   }
 
   .lh .big {
-    font-size: 22vw;
+    font-size: 20vw;
   }
 }
 
@@ -365,7 +400,7 @@ const css = `
   }
 
   .lh .info-row {
-    top: 6px;
+    top: 52%;
     padding: 0 10px;
     gap: 8px;
   }
@@ -495,6 +530,11 @@ export default function LawyerHero({
 
       {/* Statue Stage */}
       <div className="stage">
+        {/* Big word behind the statue */}
+        <div className="big" aria-hidden="true">
+          Lawyer
+        </div>
+
         {isMobile !== null && (
           <div className={`rise${ready ? " in" : ""}`}>
             <video
