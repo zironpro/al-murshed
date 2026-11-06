@@ -111,19 +111,21 @@ const css = `
   animation: lh-appear 1.2s ease-out .6s forwards;
 }
 
-/* Thin outline box behind the statue (no fill, like the ref) */
+/* Custom backdrop under the video (no CSS border): a narrow panel whose
+   edge lines are drawn with gradients and fade out toward the bottom */
 .lh .frame {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 50%;
-  width: var(--frame-w, 36%);
+  width: var(--frame-w, 28%);
   transform: translateX(-50%);
   z-index: 1;
   pointer-events: none;
-  background: none;
-  border: 1px solid rgba(74, 42, 8, .12);
-  border-bottom: none;
+  background:
+    linear-gradient(rgba(74, 42, 8, .12), rgba(74, 42, 8, .12)) top / 100% 1px no-repeat,
+    linear-gradient(180deg, rgba(74, 42, 8, .12), rgba(74, 42, 8, 0) 80%) left / 1px 100% no-repeat,
+    linear-gradient(180deg, rgba(74, 42, 8, .12), rgba(74, 42, 8, 0) 80%) right / 1px 100% no-repeat;
   opacity: 0;
   animation: lh-appear 1.2s ease-out .4s forwards;
 }
@@ -163,9 +165,9 @@ const css = `
 /* Information Row - TOP of stage */
 .lh .info-row {
   position: absolute;
-  top: 52%;
+  top: 55px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   z-index: 5;
 
   display: flex;
@@ -310,7 +312,7 @@ const css = `
     transform: none;
   }
   .lh .info-row {
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
   }
   .lh .big,
   .lh .frame {
@@ -328,7 +330,7 @@ const css = `
 /* Tablet */
 @media (max-width: 760px) {
   .lh {
-    --frame-w: 40%;
+    --frame-w: 34%;
     --stage-h: 810px;
     --lift: 170px;
     --trim: 190px;
@@ -359,7 +361,7 @@ const css = `
   }
 
   .lh .info-row {
-    top: 52%;
+    top: 12px;
     padding: 0 20px;
     gap: 20px;
   }
@@ -395,7 +397,7 @@ const css = `
 /* Mobile */
 @media (max-width: 480px) {
   .lh {
-    --frame-w: 44%;
+    --frame-w: 40%;
     --stage-h: 650px;
     --lift: 130px;
     --trim: 150px;
@@ -420,7 +422,7 @@ const css = `
   }
 
   .lh .info-row {
-    top: 52%;
+    top: 6px;
     padding: 0 10px;
     gap: 8px;
   }
